@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import json
 import logging
@@ -12,13 +13,22 @@ class Database:
 
     def __init__(self, db_path: Optional[Path] = None):
         if db_path is None:
-            base_dir = Path(__file__).resolve().parents[1]
-            data_dir = base_dir / "output" / "data"
-            data_dir.mkdir(parents=True, exist_ok=True)
-            self.db_path = data_dir / "rotacalculada.sqlite3"
+            if os.environ.get("VERCEL"):
+                self.db_path = Path("/tmp/rotacalculada.sqlite3")
+            else:
+                try:
+                    base_dir = Path(__file__).resolve().parents[1]
+                    data_dir = base_dir / "output" / "data"
+                    data_dir.mkdir(parents=True, exist_ok=True)
+                    self.db_path = data_dir / "rotacalculada.sqlite3"
+                except Exception:
+                    self.db_path = Path("/tmp/rotacalculada.sqlite3")
         else:
             self.db_path = Path(db_path)
-            self.db_path.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                self.db_path.parent.mkdir(parents=True, exist_ok=True)
+            except Exception:
+                pass
 
         self._init_db()
 

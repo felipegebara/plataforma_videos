@@ -50,8 +50,11 @@ output_dir = project_root / "output"
 upload_dir = output_dir / "uploads"
 ui_dir = project_root / "ui"
 
-upload_dir.mkdir(parents=True, exist_ok=True)
-ui_dir.mkdir(parents=True, exist_ok=True)
+try:
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    ui_dir.mkdir(parents=True, exist_ok=True)
+except Exception as _dir_err:
+    logger.warning(f"Diretórios não puderam ser criados (ambiente Vercel Serverless): {_dir_err}")
 
 
 class ChatRequest(BaseModel):
