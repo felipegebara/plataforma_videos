@@ -1,0 +1,58 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Virtual Environments
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables & Secrets
+.env
+.env.local
+*.key
+*.pem
+
+# Heavy Media Archives & Media Files (Videos, Audios, Zips)
+*.zip
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
+
+# Output & Data Assets
+output/videos/
+output/audio/
+output/uploads/
+output/thumbnails/
+output/images/
+output/subtitles/
+output/data/*.sqlite3
+output/data/*.sqlite3-journal
+output/legoland/
+output/odense/
+output/tamar floripa/
+output/tamar_detailed_audit/
+output/tamar_frame_samples/
+legohouse/
+arabia/
+ia/
+scratch/
+temp/
+*.log
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/

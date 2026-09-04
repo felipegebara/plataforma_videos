@@ -1,0 +1,12 @@
+version: "3.9"
+
+# Fase 1: só o Redis (event bus). Postgres/Neo4j/ChromaDB/Ollama entram
+# nas fases seguintes, quando os agentes que dependem deles forem implementados.
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes

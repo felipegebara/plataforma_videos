@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EnvelopeSchema",
+  "type": "object",
+  "required": [
+    "job_id",
+    "pipeline_id",
+    "agent",
+    "status",
+    "timestamp",
+    "payload",
+    "trace",
+    "retry_count"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string"
+    },
+    "pipeline_id": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "success", "retry", "error"]
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "trace": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "retry_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "error": {
+      "type": ["string", "null"]
+    }
+  },
+  "additionalProperties": true
+}

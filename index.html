@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity — Dashboard do Pipeline Autônomo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <div class="logo-text">
+          <h1>ANTIGRAVITY</h1>
+          <span class="subtitle">Multi-Agent Content Factory (Fases 1, 2, 3 & 4: Áudio & Vídeo Integrados)</span>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="badge badge-redis">
+          <span class="dot online"></span> Redis Stream Bus Connected
+        </span>
+        <span id="pipeline-status-badge" class="badge badge-idle">Status: Idle</span>
+      </div>
+    </header>
+
+    <!-- Controls Bar -->
+    <section class="control-panel">
+      <div class="input-group">
+        <label for="topic-input">Tópico / Ideia de Vídeo:</label>
+        <div class="input-wrapper">
+          <input type="text" id="topic-input" placeholder="Ex: Túneis Secretos do Pelourinho, O Mistério de Maria Baderna..." value="Túneis Secretos do Pelourinho">
+          <button id="btn-trigger" class="btn btn-primary">
+            <span class="btn-icon">🚀</span> Iniciar Esteira (18 Agentes)
+          </button>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Job ID Ativo</span>
+          <span id="metric-job-id" class="metric-value font-mono">--</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Agente Ativo</span>
+          <span id="metric-active-agent" class="metric-value accent">Nenhum</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Progresso do DAG</span>
+          <span id="metric-progress" class="metric-value">0 / 18</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Render Áudio & Vídeo</span>
+          <span id="metric-audio" class="metric-value success">100% Integrado</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pipeline DAG Pipeline Grid -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Esteira de Produção de Conteúdo (DAG de 18 Agentes)</h2>
+        <span class="tag">Event-Driven Architecture via Redis Streams</span>
+      </div>
+
+      <div class="dag-container">
+        <!-- Fase 2: Esteira de Texto (01 a 06) -->
+        <div class="phase-group">
+          <div class="phase-title">Fase 2 — Geração e Otimização de Texto (Ollama qwen2.5:7b)</div>
+          <div class="nodes-row">
+
+            <div class="agent-card" id="card-01_trend_hunter">
+              <div class="card-step">01</div>
+              <div class="card-info">
+                <h3>01_trend_hunter</h3>
+                <span class="stream-tag">in: stream:start</span>
+                <span class="stream-tag out">out: stream:trends</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-02_research">
+              <div class="card-step">02</div>
+              <div class="card-info">
+                <h3>02_research</h3>
+                <span class="stream-tag">in: stream:trends</span>
+                <span class="stream-tag out">out: stream:research</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-03_fact_checker">
+              <div class="card-step">03</div>
+              <div class="card-info">
+                <h3>03_fact_checker</h3>
+                <span class="stream-tag">in: stream:research</span>
+                <span class="stream-tag out">out: stream:factcheck</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-04_story_architect">
+              <div class="card-step">04</div>
+              <div class="card-info">
+                <h3>04_story_architect</h3>
+                <span class="stream-tag">in: stream:factcheck</span>
+                <span class="stream-tag out">out: stream:script</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-05_emotion_optimizer">
+              <div class="card-step">05</div>
+              <div class="card-info">
+                <h3>05_emotion_optimizer</h3>
+                <span class="stream-tag">in: stream:script</span>
+                <span class="stream-tag out">out: stream:emotion</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-06_scene_planner">
+              <div class="card-step">06</div>
+              <div class="card-info">
+                <h3>06_scene_planner</h3>
+                <span class="stream-tag">in: stream:emotion</span>
+                <span class="stream-tag out">out: stream:scenes</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Fase 3: Produção Visual & Render (07 a 12) -->
+        <div class="phase-group margin-top">
+          <div class="phase-title">Fase 3 — Produção Visual e Montagem de Vídeo (07 a 12)</div>
+          <div class="nodes-row">
+
+            <div class="agent-card" id="card-07_prompt_engineer">
+              <div class="card-step">07</div>
+              <div class="card-info">
+                <h3>07_prompt_engineer</h3>
+                <span class="stream-tag">in: stream:scenes</span>
+                <span class="stream-tag out">out: stream:prompts</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-08_character_manager">
+              <div class="card-step">08</div>
+              <div class="card-info">
+                <h3>08_character_manager</h3>
+                <span class="stream-tag">in: stream:prompts</span>
+                <span class="stream-tag out">out: stream:character_consistency</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-09_image_generator">
+              <div class="card-step">09</div>
+              <div class="card-info">
+                <h3>09_image_generator</h3>
+                <span class="stream-tag">in: stream:character_consistency</span>
+                <span class="stream-tag out">out: stream:images</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-10_image_reviewer">
+              <div class="card-step">10</div>
+              <div class="card-info">
+                <h3>10_image_reviewer</h3>
+                <span class="stream-tag">in: stream:images</span>
+                <span class="stream-tag out">out: stream:images_reviewed</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-11_motion_director">
+              <div class="card-step">11</div>
+              <div class="card-info">
+                <h3>11_motion_director</h3>
+                <span class="stream-tag">in: stream:images_reviewed</span>
+                <span class="stream-tag out">out: stream:videos</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-12_video_composer">
+              <div class="card-step">12</div>
+              <div class="card-info">
+                <h3>12_video_composer</h3>
+                <span class="stream-tag">in: stream:videos</span>
+                <span class="stream-tag out">out: stream:final_render</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Fase 4: Áudio, Narração, BGM & Multiplexação (13 a 18) -->
+        <div class="phase-group margin-top">
+          <div class="phase-title">Fase 4 — Áudio, Narração, BGM, Legendas & Multiplexação Final (13 a 18)</div>
+          <div class="nodes-row">
+
+            <div class="agent-card" id="card-13_narrator">
+              <div class="card-step">13</div>
+              <div class="card-info">
+                <h3>13_narrator</h3>
+                <span class="stream-tag">in: stream:final_render</span>
+                <span class="stream-tag out">out: stream:audio_voice</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-14_voice_emotion">
+              <div class="card-step">14</div>
+              <div class="card-info">
+                <h3>14_voice_emotion</h3>
+                <span class="stream-tag">in: stream:audio_voice</span>
+                <span class="stream-tag out">out: stream:audio_emotion</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-15_music">
+              <div class="card-step">15</div>
+              <div class="card-info">
+                <h3>15_music</h3>
+                <span class="stream-tag">in: stream:audio_emotion</span>
+                <span class="stream-tag out">out: stream:audio_music</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-16_ambient_sound">
+              <div class="card-step">16</div>
+              <div class="card-info">
+                <h3>16_ambient_sound</h3>
+                <span class="stream-tag">in: stream:audio_music</span>
+                <span class="stream-tag out">out: stream:audio_sfx</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-17_subtitle">
+              <div class="card-step">17</div>
+              <div class="card-info">
+                <h3>17_subtitle</h3>
+                <span class="stream-tag">in: stream:audio_sfx</span>
+                <span class="stream-tag out">out: stream:subtitles</span>
+              </div>
+            </div>
+
+            <div class="agent-card" id="card-18_final_multiplexer">
+              <div class="card-step">18</div>
+              <div class="card-info">
+                <h3>18_final_multiplexer</h3>
+                <span class="stream-tag">in: stream:subtitles</span>
+                <span class="stream-tag out">out: stream:complete_movie</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Main Output & Logs split view -->
+    <div class="content-grid">
+      <!-- Left Panel: Generated Scenes & Script Output -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Vídeo Final Renderizado com Áudio Completo</h2>
+          <span id="scene-counter-badge" class="badge">0 Cenas</span>
+        </div>
+
+        <!-- Master Video Player Box -->
+        <div id="final-video-container" class="final-video-box" style="display: none;">
+          <div class="final-video-header">
+            <h3>🎬 VÍDEO MASTER COM NARRAÇÃO E MÚSICA BGM:</h3>
+            <span id="final-video-path-label" class="font-mono text-muted"></span>
+          </div>
+          <video id="final-video-player" controls autoplay loop class="master-video-player">
+            <source id="final-video-source" src="" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Audio & Subtitle Details Box -->
+        <div id="audio-subtitles-box" class="audio-box" style="display: none;">
+          <h3>🎵 Camada de Áudio & Legendas (Fase 4):</h3>
+          <div class="audio-meta">
+            <div><strong>🔊 Trilha Sonora BGM:</strong> <span id="audio-bgm-path" class="font-mono accent"></span></div>
+            <div><strong>🎧 Estilo BGM / Volume:</strong> <span id="audio-bgm-style">cinematic suspense (-12 dB)</span></div>
+            <div><strong>📝 Legendas Animadas (.SRT / .ASS):</strong> <span id="subtitles-path" class="font-mono success"></span></div>
+          </div>
+        </div>
+
+        <div id="scenes-container" class="scenes-grid">
+          <div class="empty-state">
+            <span class="empty-icon">🎬</span>
+            <p>Nenhum vídeo gerado ainda. Digite um tópico e clique em "Iniciar Esteira".</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Live Pipeline Console Logs -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Console de Logs da Esteira</h2>
+          <button id="btn-clear-logs" class="btn-sm">Limpar Logs</button>
+        </div>
+        <div id="log-terminal" class="terminal-box">
+          <div class="log-line text-muted">[SYSTEM] Aguardando acionamento da esteira...</div>
+        </div>
+      </section>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

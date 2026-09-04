@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rota Calculada | AI Video Studio PRO 🌟</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .gold-gradient { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col h-screen overflow-hidden">
+
+    <!-- Top Navigation & Control Bar -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md px-6 py-3 flex-shrink-0 z-20">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Logo & Brand -->
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl gold-gradient flex items-center justify-center text-slate-950 font-extrabold text-lg shadow-md">
+                    RC
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm leading-tight flex items-center gap-2">
+                        ROTA CALCULADA <span class="text-amber-400 text-[10px] px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/30 font-bold">STUDIO PRO</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400">Plataforma Autônoma de Produção de Vídeos Virais</p>
+                </div>
+            </div>
+
+            <!-- Main Tabs -->
+            <div class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+                <button onclick="switchTab('chat')" id="tab-chat" class="px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold flex items-center gap-1.5 transition-all">
+                    <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Chat IA
+                </button>
+                <button onclick="switchTab('library')" id="tab-library" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-all">
+                    <i data-lucide="film" class="w-3.5 h-3.5"></i> Biblioteca
+                </button>
+                <button onclick="switchTab('series')" id="tab-series" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-all">
+                    <i data-lucide="layers" class="w-3.5 h-3.5"></i> Séries
+                </button>
+                <button onclick="switchTab('trends')" id="tab-trends" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-all">
+                    <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Trends
+                </button>
+            </div>
+
+            <!-- API Keys Status Indicators -->
+            <div id="api-status-bar" class="flex items-center gap-2 text-[10px] font-semibold bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800">
+                <span class="text-slate-400">APIs:</span>
+                <span id="status-gemini" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">Gemini</span>
+                <span id="status-pexels" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">Pexels</span>
+                <span id="status-youtube" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-500">YouTube</span>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Secondary Controls Bar for Chat -->
+    <div id="chat-controls" class="border-b border-slate-800/60 bg-slate-900/40 px-6 py-2 flex-shrink-0">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+            
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Video Path Input -->
+                <div class="flex items-center bg-slate-950 border border-slate-700 rounded-xl px-3 py-1 focus-within:border-amber-400">
+                    <i data-lucide="folder" class="w-3.5 h-3.5 text-amber-400 mr-2"></i>
+                    <input type="text" id="media-path-input" 
+                           placeholder="Pasta dos Vídeos (Ex: arabia ou output/legoland)" 
+                           class="bg-transparent text-xs w-60 focus:outline-none text-slate-200 placeholder-slate-500">
+                </div>
+
+                <!-- Voice Profile Selector -->
+                <select id="voice-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-1 text-xs text-slate-200 focus:outline-none focus:border-amber-400">
+                    <option value="antonio">🎙️ Antônio (Clássico)</option>
+                    <option value="francisca">🎙️ Francisca (Lendas)</option>
+                    <option value="leila">🎙️ Leila (Jovem/Viral)</option>
+                    <option value="julio">🎙️ Júlio (Ação/Impacto)</option>
+                    <option value="drama_m">🎙️ Antônio (Dramático)</option>
+                    <option value="minimax_m">✨ MiniMax AI (Masculino Ultra-Realista)</option>
+                    <option value="minimax_f">✨ MiniMax AI (Feminino Ultra-Realista)</option>
+                </select>
+
+                <!-- Format Selector -->
+                <select id="format-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-1 text-xs text-slate-200 focus:outline-none focus:border-amber-400">
+                    <option value="short">📱 Shorts Vertical (9:16)</option>
+                    <option value="long">📺 Vídeo Longo (16:9)</option>
+                </select>
+            </div>
+
+            <!-- Web Images Flag (Toggle) -->
+            <label class="flex items-center gap-2 bg-slate-950 border border-slate-700 rounded-xl px-3 py-1 cursor-pointer hover:border-slate-600 transition-all select-none">
+                <input type="checkbox" id="web-images-flag" checked class="w-3.5 h-3.5 text-amber-400 rounded bg-slate-900 border-slate-700 accent-amber-400 cursor-pointer">
+                <span class="text-xs text-slate-300 font-medium flex items-center gap-1">
+                    <i data-lucide="globe" class="w-3.5 h-3.5 text-sky-400"></i> Stock Video + Ken Burns
+                </span>
+            </label>
+
+        </div>
+    </div>
+
+    <!-- TAB 1: Chat Feed Area -->
+    <main id="view-chat" class="flex-1 overflow-y-auto p-6 max-w-4xl w-full mx-auto space-y-6 custom-scrollbar">
+
+        <!-- Welcome Message from Assistant -->
+        <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full gold-gradient flex-shrink-0 flex items-center justify-center text-slate-950 font-bold text-xs shadow">
+                RC
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl rounded-tl-none p-4 max-w-2xl text-xs space-y-2.5 shadow-lg">
+                <p class="font-semibold text-slate-200 text-sm">Olá! Sou o seu Diretor de Vídeo do Rota Calculada. 🎬</p>
+                <p class="text-slate-300 leading-relaxed">
+                    Agora com <strong>IA Gemini</strong>, <strong>Legendas Whisper Animadas</strong>, <strong>Fallback Stock HD (Pexels)</strong> e <strong>Upload para o YouTube</strong>!
+                </p>
+                <div class="flex flex-wrap gap-2 pt-1">
+                    <button onclick="setPrompt('crie um short viral sobre o segredo do triangulo das bermudas', '')" 
+                            class="px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-amber-400/10 border border-slate-700 hover:border-amber-400/40 text-slate-300 hover:text-amber-300 text-[11px] transition-all text-left">
+                        🌊 Triângulo das Bermudas
+                    </button>
+                    <button onclick="setPrompt('monte shorts das esculturas da arabia explicando as historias e mitos por tras', 'arabia')" 
+                            class="px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-amber-400/10 border border-slate-700 hover:border-amber-400/40 text-slate-300 hover:text-amber-300 text-[11px] transition-all text-left">
+                        🌙 Lendas das Arábias
+                    </button>
+                    <button onclick="setPrompt('crie um video sobre os tuneis secretas do pelourinho', '')" 
+                            class="px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-amber-400/10 border border-slate-700 hover:border-amber-400/40 text-slate-300 hover:text-amber-300 text-[11px] transition-all text-left">
+                        🏛️ Túneis do Pelourinho
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- TAB 2: Library Grid Area -->
+    <main id="view-library" class="hidden flex-1 overflow-y-auto p-6 max-w-6xl w-full mx-auto custom-scrollbar">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                    <i data-lucide="film" class="w-5 h-5 text-amber-400"></i> Biblioteca de Vídeos Produzidos
+                </h2>
+                <p class="text-xs text-slate-400">Todos os vídeos e Shorts gerados na plataforma</p>
+            </div>
+            <button onclick="loadLibrary()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold flex items-center gap-1.5">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Atualizar
+            </button>
+        </div>
+        <div id="library-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <p class="text-xs text-slate-500 col-span-full text-center py-10">Carregando biblioteca...</p>
+        </div>
+    </main>
+
+    <!-- TAB 3: Series Area -->
+    <main id="view-series" class="hidden flex-1 overflow-y-auto p-6 max-w-4xl w-full mx-auto custom-scrollbar">
+        <div class="mb-6">
+            <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                <i data-lucide="layers" class="w-5 h-5 text-amber-400"></i> Criador de Séries Automáticas
+            </h2>
+            <p class="text-xs text-slate-400">Selecione uma pasta com vídeos brutos e a IA criará N Shorts encadeados automaticamente</p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 max-w-xl">
+            <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Nome da Série</label>
+                <input type="text" id="series-name" placeholder="Ex: Segredos da Lego House" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1">Caminho da Pasta dos Vídeos</label>
+                <input type="text" id="series-folder" placeholder="Ex: legohouse ou arabia" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-400">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">Máximo de Shorts</label>
+                    <input type="number" id="series-max" value="5" min="1" max="20" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">Voz da Narração</label>
+                    <select id="series-voice" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-400">
+                        <option value="pt-BR-AntonioNeural">Antônio (Narrador)</option>
+                        <option value="pt-BR-FranciscaNeural">Francisca (Lendas)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="submitSeries()" class="w-full py-3 rounded-xl gold-gradient text-slate-950 font-bold text-xs shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                <i data-lucide="play-circle" class="w-4 h-4"></i> Iniciar Produção da Série
+            </button>
+        </div>
+
+        <div id="series-result" class="mt-6 hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-3">
+            <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Série Iniciada!
+            </h3>
+            <div id="series-jobs-list" class="space-y-2 text-xs"></div>
+        </div>
+    </main>
+
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-amber-400"></i> Trending Topics Virais
+                </h2>
+                <p class="text-xs text-slate-400">Sugestões de destinos, parques e histórias em alta</p>
+            </div>
+            
+            <!-- Category Filter Buttons -->
+            <div class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+                <button onclick="loadTrends('travel')" id="trend-cat-travel" class="px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold flex items-center gap-1.5 transition-all">
+                    ✈️ Viagens & Turismo
+                </button>
+                <button onclick="loadTrends('history')" id="trend-cat-history" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-all">
+                    🏛️ História & Mistérios
+                </button>
+                <button onclick="loadTrends('all')" id="trend-cat-all" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-all">
+                    🌐 Todas
+                </button>
+            </div>
+
+            <button onclick="loadTrends()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold flex items-center gap-1.5">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Atualizar
+            </button>
+        </div>
+        <div id="trends-list" class="space-y-3">
+            <p class="text-xs text-slate-500 text-center py-10">Carregando sugestões virais...</p>
+        </div>
+    </main>
+
+    <!-- Chat Input Area (Fixed Bottom) -->
+    <footer id="chat-footer" class="border-t border-slate-800 bg-slate-900/90 backdrop-blur-md p-4 flex-shrink-0">
+        <div class="max-w-4xl mx-auto flex items-end gap-3">
+            <div class="flex-1 bg-slate-950 border border-slate-700 rounded-2xl p-2.5 focus-within:border-amber-400 transition-all flex items-center gap-2 shadow-inner">
+                <textarea id="chat-input" rows="1" 
+                          placeholder="Digite suas instruções de vídeo... Ex: crie um short sobre o mistério de Atlântida"
+                          class="w-full bg-transparent text-sm focus:outline-none resize-none px-2 text-slate-100 placeholder-slate-500 max-h-32"></textarea>
+            </div>
+            <button id="send-btn" onclick="sendMessage()" class="p-3.5 rounded-xl gold-gradient text-slate-950 font-bold shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center flex-shrink-0">
+                <i data-lucide="send" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const chatInput = document.getElementById('chat-input');
+        const mediaInput = document.getElementById('media-path-input');
+        const webFlag = document.getElementById('web-images-flag');
+        const formatSelect = document.getElementById('format-select');
+        const voiceSelect = document.getElementById('voice-select');
+        const chatMessages = document.getElementById('view-chat');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Initial setup
+        checkApiStatus();
+
+        function switchTab(tab) {
+            ['chat', 'library', 'series', 'trends'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${t}`);
+                btn.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-all";
+            });
+
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            activeBtn.className = "px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold flex items-center gap-1.5 transition-all";
+
+            document.getElementById('chat-controls').style.display = (tab === 'chat') ? 'block' : 'none';
+            document.getElementById('chat-footer').style.display = (tab === 'chat') ? 'block' : 'none';
+
+            if (tab === 'library') loadLibrary();
+            if (tab === 'trends') loadTrends();
+        }
+
+        async function checkApiStatus() {
+            try {
+                const res = await fetch('/api/settings/status');
+                const st = await res.json();
+                
+                updateStatusBadge('status-gemini', st.gemini, 'Gemini');
+                updateStatusBadge('status-pexels', st.pexels || st.pixabay, 'Stock Video');
+                updateStatusBadge('status-youtube', st.youtube, 'YouTube');
+            } catch (e) {}
+        }
+
+        function updateStatusBadge(id, isOk, label) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (isOk) {
+                el.className = "px-1.5 py-0.5 rounded bg-emerald-400/10 text-emerald-400 border border-emerald-400/30";
+                el.textContent = `✓ ${label}`;
+            } else {
+                el.className = "px-1.5 py-0.5 rounded bg-slate-800 text-slate-500";
+                el.textContent = `! ${label}`;
+            }
+        }
+
+        // Auto-expand textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Send on Enter
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function setPrompt(promptText, folderPath) {
+            switchTab('chat');
+            chatInput.value = promptText;
+            if (folderPath) mediaInput.value = folderPath;
+            chatInput.focus();
+        }
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            const mediaPath = mediaInput.value.trim();
+            const useWebImages = webFlag.checked;
+            const formatType = formatSelect.value;
+            const voiceName = voiceSelect.value;
+
+            appendUserMessage(message, mediaPath, useWebImages);
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+
+            const botMsgId = 'msg_' + Date.now();
+            appendAssistantLoading(botMsgId);
+
+            sendBtn.disabled = true;
+            sendBtn.classList.add('opacity-50');
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        media_path: mediaPath,
+                        use_web_images: useWebImages,
+                        format_type: formatType,
+                        voice_name: voiceName
+                    })
+                });
+
+                const data = await response.json();
+                if (data.job_id) {
+                    pollJobStatus(data.job_id, botMsgId, data.assistant_reply);
+                } else {
+                    updateAssistantMessage(botMsgId, 'Desculpe, ocorreu um erro ao iniciar a produção: ' + (data.detail || 'Erro desconhecido.'));
+                    sendBtn.disabled = false;
+                    sendBtn.classList.remove('opacity-50');
+                }
+            } catch (err) {
+                updateAssistantMessage(botMsgId, 'Erro de conexão com o servidor: ' + err);
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('opacity-50');
+            }
+        }
+
+        function appendUserMessage(text, mediaPath, useWeb) {
+            const div = document.createElement('div');
+            div.className = 'flex items-start justify-end gap-3';
+            div.innerHTML = `
+                <div class="bg-amber-400 text-slate-950 font-medium rounded-2xl rounded-tr-none p-4 max-w-xl text-xs space-y-1 shadow-md">
+                    <p class="leading-relaxed font-semibold">${escapeHtml(text)}</p>
+                    ${mediaPath ? `<p class="text-[10px] opacity-80 mt-1 flex items-center gap-1 font-mono">📁 ${escapeHtml(mediaPath)}</p>` : ''}
+                </div>
+                <div class="w-8 h-8 rounded-full bg-slate-800 flex-shrink-0 flex items-center justify-center text-slate-200 text-xs font-bold">
+                    VOCÊ
+                </div>
+            `;
+            chatMessages.appendChild(div);
+            scrollToBottom();
+        }
+
+        function appendAssistantLoading(msgId) {
+            const div = document.createElement('div');
+            div.id = msgId;
+            div.className = 'flex items-start gap-3';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-full gold-gradient flex-shrink-0 flex items-center justify-center text-slate-950 font-bold text-xs shadow">
+                    RC
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl rounded-tl-none p-4 max-w-2xl text-xs space-y-3 shadow-lg w-full">
+                    <p class="text-slate-300 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                        <span id="${msgId}_step">Gerando Roteiro com IA e Pesquisando Mídias...</span>
+                    </p>
+                    <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+                        <div id="${msgId}_bar" class="gold-gradient h-2 rounded-full transition-all duration-300" style="width: 5%"></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(div);
+            scrollToBottom();
+        }
+
+        function pollJobStatus(jobId, msgId, initialReply) {
+            const stepLabel = document.getElementById(`${msgId}_step`);
+            const progressBar = document.getElementById(`${msgId}_bar`);
+
+            const interval = setInterval(async () => {
+                try {
+                    const res = await fetch(`/api/jobs/${jobId}`);
+                    const job = await res.json();
+
+                    if (stepLabel) stepLabel.textContent = `${job.current_step || 'Processando'} (${job.progress}%)`;
+                    if (progressBar) progressBar.style.width = `${job.progress}%`;
+
+                    if (job.status === 'COMPLETED') {
+                        clearInterval(interval);
+                        renderFinalVideoCard(msgId, job);
+                        sendBtn.disabled = false;
+                        sendBtn.classList.remove('opacity-50');
+                    } else if (job.status === 'FAILED') {
+                        clearInterval(interval);
+                        updateAssistantMessage(msgId, `❌ Erro na renderização: ${job.error_message}`);
+                        sendBtn.disabled = false;
+                        sendBtn.classList.remove('opacity-50');
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }, 1500);
+        }
+
+        function renderFinalVideoCard(msgId, job) {
+            const container = document.getElementById(msgId);
+            if (!container) return;
+
+            const videoFn = job.video_path ? job.video_path.split('\\').pop().split('/').pop() : '';
+            const thumbFn = job.thumbnail_path ? job.thumbnail_path.split('\\').pop().split('/').pop() : '';
+            const titles = job.titles || {};
+
+            container.innerHTML = `
+                <div class="w-8 h-8 rounded-full gold-gradient flex-shrink-0 flex items-center justify-center text-slate-950 font-bold text-xs shadow">
+                    RC
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl rounded-tl-none p-5 max-w-2xl text-xs space-y-4 shadow-xl w-full">
+                    
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <span class="font-bold text-amber-400 text-sm flex items-center gap-1.5">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> Vídeo Produzido com Legendas Animadas!
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="uploadToYouTube('${job.id}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-white rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all">
+                                <i data-lucide="youtube" class="w-3.5 h-3.5"></i> Publicar no YouTube
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Video Player Preview -->
+                    ${videoFn ? `
+                    <div class="rounded-xl overflow-hidden bg-black border border-slate-800">
+                        <video controls class="w-full max-h-72 object-contain mx-auto" src="/api/media/videos/${videoFn}"></video>
+                    </div>` : ''}
+
+                    <!-- Titles & Descriptions -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2">
+                        <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="flame" class="w-3.5 h-3.5"></i> Título Recomendado
+                        </span>
+                        <div class="flex items-center justify-between bg-slate-900 p-2 rounded-lg border border-slate-800">
+                            <span class="font-bold text-slate-100 pr-2">${escapeHtml(titles.viral_curiosity || job.topic)}</span>
+                            <button onclick="copyToClipboard('${escapeJs(titles.viral_curiosity || job.topic)}')" class="px-2 py-1 bg-amber-400/10 text-amber-400 border border-amber-400/30 rounded text-[10px] font-bold hover:bg-amber-400 hover:text-slate-950 transition-all">Copiar</button>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+            lucide.createIcons();
+            scrollToBottom();
+        }
+
+        async function loadLibrary() {
+            const grid = document.getElementById('library-grid');
+            try {
+                const res = await fetch('/api/jobs');
+                const data = await res.json();
+                const jobs = (data.jobs || []).filter(j => j.status === 'COMPLETED');
+
+                if (!jobs.length) {
+                    grid.innerHTML = '<p class="text-xs text-slate-500 col-span-full text-center py-10">Nenhum vídeo produzido ainda.</p>';
+                    return;
+                }
+
+                grid.innerHTML = jobs.map(j => {
+                    const videoFn = j.output_video ? j.output_video.split('\\').pop().split('/').pop() : '';
+                    return `
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3 flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="font-bold text-xs text-slate-100 line-clamp-2">${escapeHtml(j.topic)}</div>
+                                ${videoFn ? `<video controls class="w-full h-40 object-cover rounded-lg bg-black" src="/api/media/videos/${videoFn}"></video>` : ''}
+                            </div>
+                            <div class="flex items-center gap-2 pt-2 border-t border-slate-800">
+                                <a href="/api/media/videos/${videoFn}" download class="flex-1 text-center py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-[11px] font-semibold text-slate-200">Baixar MP4</a>
+                                <button onclick="uploadToYouTube('${j.id}')" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-[11px] font-bold">YouTube</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                lucide.createIcons();
+            } catch (e) {
+                grid.innerHTML = '<p class="text-xs text-red-400 col-span-full text-center py-10">Erro ao carregar biblioteca.</p>';
+            }
+        }
+
+        async function loadTrends(category = 'travel') {
+            const list = document.getElementById('trends-list');
+            
+            // Atualiza botões ativos
+            ['travel', 'history', 'all'].forEach(c => {
+                const btn = document.getElementById(`trend-cat-${c}`);
+                if (btn) {
+                    if (c === category) {
+                        btn.className = "px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold flex items-center gap-1.5 transition-all";
+                    } else {
+                        btn.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-all";
+                    }
+                }
+            });
+
+            try {
+                const res = await fetch(`/api/trends?category=${category}`);
+                const trends = await res.json();
+
+                list.innerHTML = trends.map(t => `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg hover:border-amber-400/40 transition-all">
+                        <div class="space-y-1.5 flex-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/30">${escapeHtml(t.badge || '🔥 EM ALTA')}</span>
+                                ${t.location ? `<span class="text-[10px] text-slate-300 font-semibold flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3 text-red-400"></i> ${escapeHtml(t.location)} (${escapeHtml(t.country || '')})</span>` : ''}
+                                ${t.search_volume ? `<span class="text-[10px] text-emerald-400 font-mono font-bold">${escapeHtml(t.search_volume)}</span>` : ''}
+                            </div>
+                            <h3 class="font-bold text-sm text-slate-100 flex items-center gap-1.5">
+                                ${escapeHtml(t.title)}
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">${escapeHtml(t.description)}</p>
+                        </div>
+                        <button onclick="setPrompt('crie um short sobre a viagem para: ${escapeJs(t.title)}', '')" class="px-4 py-2.5 rounded-xl gold-gradient text-slate-950 font-bold text-xs flex-shrink-0 shadow hover:brightness-110 flex items-center justify-center gap-1.5">
+                            <i data-lucide="video" class="w-3.5 h-3.5"></i> Criar Vídeo
+                        </button>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            } catch (e) {
+                list.innerHTML = '<p class="text-xs text-red-400 text-center py-10">Erro ao carregar trending topics.</p>';
+            }
+        }
+
+        async function submitSeries() {
+            const name = document.getElementById('series-name').value.trim();
+            const folder = document.getElementById('series-folder').value.trim();
+            const max = parseInt(document.getElementById('series-max').value) || 5;
+            const voice = document.getElementById('series-voice').value;
+
+            if (!name || !folder) {
+                alert('Preencha o nome da série e o caminho da pasta!');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/series/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        series_name: name,
+                        folder_path: folder,
+                        max_shorts: max,
+                        voice_name: voice
+                    })
+                });
+                const data = await res.json();
+                if (data.series) {
+                    document.getElementById('series-result').classList.remove('hidden');
+                    document.getElementById('series-jobs-list').innerHTML = data.series.jobs.map(j => `
+                        <div class="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800">
+                            <span>Episódio ${j.episode}: ${escapeHtml(j.topic)}</span>
+                            <span class="text-amber-400 font-bold">EM FILA</span>
+                        </div>
+                    `).join('');
+                } else {
+                    alert('Erro: ' + (data.detail || 'Falha ao criar série'));
+                }
+            } catch (e) {
+                alert('Erro de conexão: ' + e);
+            }
+        }
+
+        async function uploadToYouTube(jobId) {
+            if (!confirm('Deseja publicar este vídeo no seu canal do YouTube?')) return;
+            try {
+                const res = await fetch(`/api/jobs/${jobId}/upload-youtube`, { method: 'POST' });
+                const data = await res.json();
+                if (data.url) {
+                    alert('Vídeo publicado com sucesso no YouTube! 🎉 URL: ' + data.url);
+                } else {
+                    alert('Aviso YouTube: ' + (data.error || JSON.stringify(data)));
+                }
+            } catch (e) {
+                alert('Erro no envio para o YouTube: ' + e);
+            }
+        }
+
+        function updateAssistantMessage(msgId, text) {
+            const container = document.getElementById(msgId);
+            if (container) {
+                container.innerHTML = `
+                    <div class="w-8 h-8 rounded-full gold-gradient flex-shrink-0 flex items-center justify-center text-slate-950 font-bold text-xs shadow">
+                        RC
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl rounded-tl-none p-4 max-w-2xl text-xs shadow-lg text-slate-200">
+                        ${escapeHtml(text)}
+                    </div>
+                `;
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert('Copiado para a área de transferência! ✅');
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function escapeJs(str) {
+            return String(str).replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '');
+        }
+    </script>
+</body>
+</html>
