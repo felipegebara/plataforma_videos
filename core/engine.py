@@ -7,18 +7,23 @@ import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from PIL import Image, ImageDraw, ImageFont
-import cv2
-import numpy as np
+try:
+    import cv2
+except Exception as _cv_err:
+    cv2 = None
 
-from moviepy import (
-    VideoFileClip,
-    ImageClip,
-    AudioFileClip,
-    CompositeAudioClip,
-    CompositeVideoClip,
-    concatenate_videoclips,
-    vfx
-)
+try:
+    from moviepy import (
+        VideoFileClip,
+        ImageClip,
+        AudioFileClip,
+        CompositeAudioClip,
+        CompositeVideoClip,
+        concatenate_videoclips,
+        vfx
+    )
+except Exception as _mpy_err:
+    VideoFileClip = ImageClip = AudioFileClip = CompositeAudioClip = CompositeVideoClip = concatenate_videoclips = vfx = None
 
 # Project paths
 project_root = Path(__file__).resolve().parents[1]

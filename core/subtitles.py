@@ -12,9 +12,10 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
-import numpy as np
-from PIL import Image, ImageDraw, ImageFont
-from moviepy import ImageClip, CompositeVideoClip, VideoFileClip
+try:
+    from moviepy import ImageClip, CompositeVideoClip, VideoFileClip
+except Exception as _mpy_sub_err:
+    ImageClip = CompositeVideoClip = VideoFileClip = None
 
 logger = logging.getLogger("core.subtitles")
 
