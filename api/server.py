@@ -216,6 +216,32 @@ async def serve_media(category_folder: str, filename: str):
     return FileResponse(str(media_path), media_type=media_type)
 
 
+@app.post("/api/upload")
+async def upload_video_files(files: List[UploadFile] = File(...)):
+    """Recebe arquivos de vídeo enviados pelo navegador e armazena no diretório de uploads."""
+    target_dir = Path("/tmp/uploads") if os.environ.get("VERCEL") else upload_dir
+    try:
+        target_dir.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        pass
+
+    saved_files = []
+    for file in files:
+        file_path = target_dir / file.filename
+        content = await file.read()
+        with open(file_path, "wb") as f:
+            f.write(content)
+        saved_files.append(str(file_path))
+
+    logger.info(f"[Upload] {len(saved_files)} arquivo(s) salvos em {target_dir}")
+    return {
+        "status": "success",
+        "message": f"{len(saved_files)} arquivo(s) de vídeo enviado(s) com sucesso!",
+        "folder_path": str(target_dir),
+        "files": saved_files
+    }
+
+
 @app.get("/api/settings/status")
 async def get_settings_status():
     """Retorna o status de configuracao das chaves de API."""
